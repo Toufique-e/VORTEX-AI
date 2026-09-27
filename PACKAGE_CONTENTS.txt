@@ -1,0 +1,46 @@
+# VORTEX Rover v15 — Clean Final Package Contents
+
+- `AI_SAFETY_CHANGES.md`
+- `Dashboard/LOCAL_PREVIEW.md`
+- `Dashboard/__pycache__/preview_server.cpython-313.pyc`
+- `Dashboard/camera_settings.html`
+- `Dashboard/dashboard.html`
+- `Dashboard/dashboard_preview.html`
+- `Dashboard/preview_server.py`
+- `Dashboard/start_preview.bat`
+- `Dashboard/stop_preview.bat`
+- `DevKit_Rover/DevKit_Rover.ino`
+- `ESP32_CAM/CameraWebServer0.ino`
+- `Guides/00_DOCUMENTATION_INDEX.md`
+- `Guides/01_SYSTEM_OVERVIEW.md`
+- `Guides/02_FEATURES_AND_BEHAVIOR.md`
+- `Guides/03_HARDWARE_WIRING_AND_FLASHING.md`
+- `Guides/04_OPERATION_GUIDE.md`
+- `Guides/05_AI_ML_INTEGRATION.md`
+- `Guides/06_PREDICTIVE_AI_AVOIDANCE.md`
+- `Guides/07_AI_CONFIGURATION_AND_TUNING.md`
+- `Guides/08_AI_PROTOCOL_SPEC.md`
+- `Guides/09_HUMAN_AVOIDANCE_AND_RECOVERY.md`
+- `Guides/10_AI_HEALTH_AND_LATENCY.md`
+- `Guides/11_FAILSAFE_AND_STATE_MACHINE.md`
+- `Guides/12_TROUBLESHOOTING.md`
+- `Guides/13_OPERATOR_QUICK_START.md`
+- `Guides/14_HARDWARE_VALIDATION_CHECKLIST.md`
+- `Guides/15_CAMERA_UART_PROTOCOL.md`
+- `Guides/16_DASHBOARD_AND_CAMERA_SETTINGS.md`
+- `Guides/17_DEVKIT_WATCHDOG.md`
+- `Guides/18_LOCAL_DASHBOARD_GUIDE.md`
+- `Guides/19_ODOMETRY_AND_LIMITATIONS.md`
+- `HARDENING_ARCHITECTURE.md`
+- `HUMAN_AVOIDANCE.md`
+- `Laptop_AI/README.md`
+- `Laptop_AI/__pycache__/ai_rover.cpython-313.pyc`
+- `Laptop_AI/ai_rover.py`
+- `Laptop_AI/requirements.txt`
+- `README.md`
+- `RELEASE_NOTES.md`
+- `SHA256SUMS.txt`
+- `TEST_REPORT.md`
+- `VERSION.txt`
+- `WIRING.md`
+- `PACKAGE_CONTENTS.txt` (this file)

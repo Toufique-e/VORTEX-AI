@@ -1,0 +1,222 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VORTEX ROVER v15 — Dashboard Preview</title>
+<style>
+:root{--bg:#070910;--panel:rgba(18,24,38,.82);--line:rgba(120,190,255,.24);--text:#eef5ff;--muted:#8ea4c2;--cyan:#43d9ff;--green:#36e69a;--red:#ff4e68;--amber:#ffc857}
+*{box-sizing:border-box}html,body{height:100%;overflow:hidden}body{margin:0;background:radial-gradient(circle at 20% 0%,#11203a 0,#080b13 44%,#05060b 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+.topbar{height:56px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 14px;background:rgba(5,7,12,.78);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:relative;z-index:5}
+.brand{font-weight:800;letter-spacing:.12em;color:var(--cyan);font-size:13px}.links{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:nowrap}.navbtn{color:var(--text);text-decoration:none;border:1px solid var(--line);padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.04);font-size:11px;white-space:nowrap}
+.status{padding:8px 12px;border-radius:999px;border:1px solid var(--green);color:var(--green);font-weight:800;font-size:11px;letter-spacing:.07em;white-space:nowrap;box-shadow:0 0 18px rgba(54,230,154,.12)}
+.status.stop{border-color:var(--red);color:var(--red);box-shadow:0 0 18px rgba(255,78,104,.24);animation:pulse 1s infinite alternate}
+@keyframes pulse{to{box-shadow:0 0 26px rgba(255,78,104,.42)}}
+.wrap{width:100%;height:calc(100vh - 56px);max-width:none;margin:0 auto;padding:10px;display:flex;flex-direction:column;min-height:0}
+.camera-shell{position:relative;height:42vh;min-height:240px;max-height:460px;display:flex;justify-content:center;align-items:stretch;flex:0 0 auto;margin-bottom:10px}.camera-wrap{height:100%;width:auto;max-width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:16px;border:1px solid var(--line);background:#020308;box-shadow:0 12px 36px rgba(0,0,0,.34)}
+#camera{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#000}.camera-note{position:absolute;left:10px;bottom:10px;padding:6px 9px;background:rgba(0,0,0,.58);border-radius:8px;font-size:10px;color:#b9c9dd}.camera-shell:after{content:'LANDSCAPE CAMERA';position:absolute;right:10px;top:10px;padding:5px 8px;border-radius:7px;background:rgba(0,0,0,.48);color:#b9c9dd;font-size:9px;letter-spacing:.08em;pointer-events:none}
+.grid{display:grid;grid-template-columns:minmax(310px,.78fr) minmax(620px,1.42fr);gap:10px;flex:1;min-height:0}.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 9px 30px rgba(0,0,0,.22);backdrop-filter:blur(14px);padding:12px;min-height:0;overflow:hidden}.panel h2{font-size:12px;letter-spacing:.1em;margin:0 0 9px;color:var(--cyan)}
+/* Compact laptop joystick panel */.joystick-area{display:flex;justify-content:center;align-items:center;min-height:0;flex:1}.panel:first-child{display:flex;flex-direction:column}.joystick{width:min(31vh,260px);height:min(31vh,260px);max-width:260px;max-height:260px;min-width:190px;min-height:190px;border-radius:50%;border:1px solid rgba(67,217,255,.32);background:radial-gradient(circle,#142238 0,#0c1220 55%,#080c16 100%);position:relative;touch-action:none;user-select:none;box-shadow:inset 0 0 50px rgba(67,217,255,.05),0 0 30px rgba(67,217,255,.07)}
+.joystick:before,.joystick:after{content:"";position:absolute;background:rgba(67,217,255,.14)}.joystick:before{width:1px;height:86%;left:50%;top:7%}.joystick:after{height:1px;width:86%;left:7%;top:50%}
+.stick{position:absolute;width:30%;height:30%;left:35%;top:35%;border-radius:50%;background:linear-gradient(145deg,#49ddff,#13799c);border:2px solid #a9f2ff;box-shadow:0 0 28px rgba(67,217,255,.35);transform:translate(0,0)}
+.axes{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.axis{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:7px 9px;font-size:11px}.axis span{float:right;font-family:ui-monospace,monospace;color:var(--cyan)}
+.telemetry-grid{display:grid;grid-template-columns:repeat(3,minmax(85px,1fr));gap:7px;margin-bottom:9px}.metric{padding:8px 9px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05)}.metric label{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.metric strong{display:block;margin-top:4px;font-size:15px}
+/* Landscape telemetry panel: avoidance on left, map on right */.grid>.panel:nth-child(2){display:grid;grid-template-columns:minmax(300px,.9fr) minmax(360px,1.1fr);grid-template-rows:auto auto 1fr auto auto;column-gap:10px;row-gap:7px}.grid>.panel:nth-child(2)>h2{grid-column:1/-1;grid-row:1}.grid>.panel:nth-child(2)>.telemetry-grid{grid-column:1;grid-row:2}.grid>.panel:nth-child(2)>.avoid-panel{grid-column:1;grid-row:3}.grid>.panel:nth-child(2)>.map-wrap{grid-column:2;grid-row:2/4;min-height:0;align-items:stretch}.grid>.panel:nth-child(2)>.map-actions{grid-column:2;grid-row:4}.grid>.panel:nth-child(2)>.footer-note{grid-column:2;grid-row:5}
+.map-wrap{display:flex;justify-content:center;min-height:0}.map{width:100%;height:100%;max-width:none;aspect-ratio:auto;border-radius:11px;border:1px solid rgba(67,217,255,.25);background:#050811;display:block}.map-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:0}.smallbtn{border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--text);padding:7px 10px;border-radius:8px;cursor:pointer;font-size:11px}.smallbtn:hover{border-color:var(--cyan)}
+.footer-note{color:var(--muted);font-size:10px;line-height:1.4;margin-top:5px}.cam-off{display:none} .preview-banner{display:flex;align-items:center;justify-content:center;gap:10px;min-height:30px;margin:8px 10px 0;padding:6px 10px;border:1px solid rgba(255,200,87,.28);border-radius:9px;background:rgba(255,200,87,.055);color:#d7cda9;font-size:10px;letter-spacing:.01em;text-align:center;flex:0 0 auto}.preview-banner strong{color:var(--amber);letter-spacing:.09em;font-size:9px}.preview-banner span{color:var(--muted)} .preview-active{border-color:rgba(67,217,255,.55)!important;background:rgba(67,217,255,.1)!important;color:var(--cyan)!important}.preview-help{position:fixed;right:12px;bottom:12px;z-index:19;padding:6px 9px;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:rgba(4,8,14,.72);color:var(--muted);font-size:9px;pointer-events:none}@media(max-width:850px),(orientation:portrait){.preview-banner{margin:8px 10px 0;flex-wrap:wrap;line-height:1.35}}
+.avoid-panel{margin-top:0;padding:9px;border:1px solid var(--line);border-radius:11px;background:rgba(5,9,18,.35);min-height:0;overflow:hidden}.avoid-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.avoid-head h3{margin:0;color:var(--cyan);font-size:10px;letter-spacing:.08em}.avoid-head span{font-size:9px;color:var(--muted);white-space:nowrap}.zone-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}.zone{padding:7px 8px;border:1px solid var(--line);border-radius:8px;display:flex;justify-content:space-between;gap:6px;font-size:9px}.zone strong{letter-spacing:.06em}.zone.occupied{border-color:rgba(255,78,104,.7);color:#ff8b9b}.zone.clear{border-color:rgba(54,230,154,.45);color:#63efb0}.hold-row{display:flex;justify-content:space-between;margin-top:6px;font-size:9px;color:var(--muted)}.hold-row strong{color:var(--text)}.hold-bar{height:5px;border-radius:99px;overflow:hidden;background:#0b1120;border:1px solid var(--line);margin-top:3px}.hold-bar div{height:100%;width:0%;background:var(--amber);transition:width .08s linear}.resume-box{margin-top:7px;padding:7px 8px;border-radius:8px;background:rgba(255,200,87,.06);border:1px solid rgba(255,200,87,.2);font-size:9px;color:var(--muted)}.resume-box span{display:block;font-size:8px;letter-spacing:.08em;margin-bottom:3px}.resume-box strong{color:var(--text);font-size:10px;line-height:1.35}.release-box{margin-top:7px;padding:7px 8px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid var(--line);font-size:9px}.release-box span{display:block;font-size:8px;letter-spacing:.08em;margin-bottom:3px;color:var(--muted)}.release-box strong{color:#ff8b9b;font-size:10px;line-height:1.3}.release-box.qualified{border-color:rgba(54,230,154,.55);background:rgba(54,230,154,.07)}.release-box.qualified strong{color:#63efb0}.countdown-note{font-size:9px;line-height:1.3;color:var(--muted);margin-top:3px}
+@media(max-width:1100px){.grid{grid-template-columns:minmax(270px,.7fr) minmax(540px,1.3fr)}.grid>.panel:nth-child(2){grid-template-columns:minmax(250px,.9fr) minmax(320px,1.1fr)}.joystick{width:min(29vh,230px);height:min(29vh,230px)}}
+/* v10 landscape fit hardening */
+@media(min-width:851px) and (max-height:900px){.grid>.panel:nth-child(2){grid-template-rows:auto auto minmax(225px,1fr) auto}.grid>.panel:nth-child(2)>.map-wrap{height:250px;max-height:250px;align-self:start}.grid>.panel:nth-child(2)>.footer-note{display:none}.grid>.panel:nth-child(2)>.map-actions{grid-column:2;grid-row:4}.grid{gap:8px}.panel{padding:10px;border-radius:14px}.panel h2{margin-bottom:7px}.avoid-panel{padding:8px}.zone{padding:6px 7px;font-size:9px}.hold-row{margin-top:5px;font-size:9px}.hold-bar{height:5px;margin-top:3px}.resume-box,.release-box{margin-top:6px;padding:6px 7px;font-size:9px}.resume-box strong,.release-box strong{font-size:10px}.countdown-note{font-size:8px;margin-top:2px}}
+@media(min-width:851px) and (max-height:780px){.camera-shell{height:39vh;max-height:330px;min-height:220px}.grid>.panel:nth-child(2)>.map-wrap{height:220px;max-height:220px}.joystick{width:min(29vh,230px);height:min(29vh,230px);min-width:180px;min-height:180px}.axes{gap:5px;margin-top:5px}.axis{padding:5px 7px}.footer-note{font-size:9px}.avoid-panel{padding:7px}.zone{padding:5px 6px;font-size:8px}.hold-row{margin-top:4px;font-size:8px}.hold-bar{height:4px;margin-top:2px}.resume-box,.release-box{margin-top:5px;padding:5px 6px;font-size:8px}.resume-box strong,.release-box strong{font-size:9px}.countdown-note{font-size:8px;margin-top:2px}}
+@media(max-width:850px),(orientation:portrait){html,body{height:auto;overflow:auto}.topbar{height:auto}.wrap{height:auto;padding:10px}.camera-shell{height:auto;max-height:none;min-height:0}.camera-wrap{width:100%;height:auto;aspect-ratio:16/9}.grid{height:auto;display:grid;grid-template-columns:1fr;flex:0 0 auto}.grid>.panel:nth-child(2){display:block}.joystick-area{min-height:320px}.joystick{width:min(78vw,320px);height:min(78vw,320px)}.map{height:auto;aspect-ratio:1.5}.telemetry-grid{grid-template-columns:repeat(2,1fr)}}.health-line{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:nowrap;padding:4px 6px;border:1px solid rgba(120,190,255,.18);border-radius:8px;background:rgba(4,8,14,.78);backdrop-filter:blur(8px);font-size:7px}.health{display:flex;align-items:center;gap:3px;min-width:0;white-space:nowrap}.health span{color:var(--muted);font-size:7px;letter-spacing:.05em}.health strong{font-size:8px;color:var(--green)}.health.bad strong{color:var(--red)}.health.warn strong{color:var(--amber)}@media(max-width:850px){.health-line{left:10px;right:10px;justify-content:flex-start;flex-wrap:wrap}}</style>
+</head>
+<body>
+<div class="topbar"><div class="brand">VORTEX // ROVER CONTROL</div><div class="links"><a id="settingsLink" class="navbtn" href="camera_settings.html">CAMERA SETTINGS</a><div id="aiLease" class="footer-note" style="margin:0">AI LEASE: --</div><div id="status" class="status">CONNECTING</div></div></div>
+<div class="preview-banner" role="status"><strong>LOCAL PREVIEW / SIMULATION</strong><span>Values remain blank until you select a test scenario below. No live rover is connected.</span></div>
+<div class="wrap">
+  <div class="camera-shell"><div class="camera-wrap"><img id="camera" alt="ESP32-CAM MJPEG stream"></div><div class="camera-note" id="camLabel">CAMERA: --</div>
+<div class="health-line" aria-label="Safety health">
+          <div class="health" id="healthVision"><span>VISION</span><strong id="visionHealth">--</strong></div>
+          <div class="health" id="healthLease"><span>AI LEASE</span><strong id="leaseHealth">--</strong></div>
+          <div class="health" id="healthHall"><span>HALL FEEDBACK</span><strong id="hallHealth">--</strong></div>
+          <div class="health" id="healthIntegrity"><span>CMD INTEGRITY</span><strong id="integrityHealth">--</strong></div>
+          <div class="health" id="healthOdom"><span>ODOM</span><strong id="odomHealth">--</strong></div><div class="health" id="healthAi"><span>AI HEALTH</span><strong id="aiHealthValue">--</strong></div>
+        </div>
+</div>
+  <div class="grid">
+    <section class="panel">
+      <h2>DRIVE JOYSTICK</h2>
+      <div class="joystick-area"><div id="joystick" class="joystick"><div id="stick" class="stick"></div></div></div>
+      <div class="axes"><div class="axis">TURN <span id="jx">0.00</span></div><div class="axis">SPEED <span id="jy">0.00</span></div></div>
+      <div class="footer-note">Vertical = forward/back speed. Horizontal = left/right turn. The DevKit ignores this input while the AI-stop latch is active.</div>
+    </section>
+    <section class="panel">
+      <h2>LIVE TELEMETRY + DEAD-RECKONING</h2>
+      <div class="telemetry-grid">
+        <div class="metric"><label>Speed</label><strong id="speed">-- cm/s</strong></div>
+        <div class="metric"><label>Heading</label><strong id="heading">--°</strong></div>
+        <div class="metric"><label>Battery</label><strong id="battery">N/A</strong></div>
+        <div class="metric"><label>X</label><strong id="x">-- cm</strong></div>
+        <div class="metric"><label>Y</label><strong id="y">-- cm</strong></div>
+        <div class="metric"><label>Distance</label><strong id="distance">-- cm</strong></div>
+      </div>
+      <div class="avoid-panel">
+        <div class="avoid-head"><h3>HUMAN AVOIDANCE ZONES</h3><span id="avoidMode">--</span></div>
+        <div class="zone-row">
+          <div class="zone" id="leftZone"><span>LEFT ZONE</span><strong id="leftZoneState">--</strong></div>
+          <div class="zone" id="rightZone"><span>RIGHT ZONE</span><strong id="rightZoneState">--</strong></div>
+        </div><div class="hold-row"><span>Blocked hold</span><strong id="blockedHold">-- / -- ms</strong></div>
+        <div class="hold-bar"><div id="blockedHoldBar"></div></div>
+        <div class="hold-row"><span>Side-clear hold</span><strong id="sideHold">-- / -- ms</strong></div>
+        <div class="hold-bar"><div id="sideHoldBar"></div></div>
+        <div class="release-box" id="releaseBox"><span>RELEASE QUALIFIED</span><strong id="releaseQualified">FALSE — neither side has completed the clear hold</strong></div>
+        <div class="hold-row"><span>Side-clear countdown</span><strong id="sideCountdown">--</strong></div>
+        <div class="countdown-note" id="sideCountdownNote">Waiting for a LEFT or RIGHT side to qualify.</div>
+        <div class="resume-box"><span>RESUME CONDITION</span><strong id="resumeCondition">--</strong></div>
+      </div>
+      <div class="map-wrap"><canvas id="map" class="map" width="720" height="480"></canvas></div>
+      <div class="map-actions"><button class="smallbtn" id="resetMap">RESET ODOMETRY</button></div>
+      <div class="footer-note">Trail is drawn from Hall-sensor distance plus integrated MPU6050 gyro yaw. This is dead reckoning, not a surveyed position.</div>
+    </section>
+  </div>
+</div>
+<script>
+let socket=null, reconnectTimer=null, telemetry=null;
+let sideCountdownSnapshot={qualified:false, side:null, remainingMs:null, requiredMs:0, packetAt:0};
+let cameraIP='192.168.4.2';
+const camera=document.getElementById('camera'); const camLabel=document.getElementById('camLabel');
+const statusEl=document.getElementById('status');
+const map=document.getElementById('map'); const ctx=map.getContext('2d'); let trail=[];
+const joystick=document.getElementById('joystick'), stick=document.getElementById('stick'); let activePointer=null; let joyX=0, joyY=0;
+function cameraUrl(){return `http://${cameraIP}:81/stream`}
+function loadCamera(){camera.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'><rect width='1600' height='900' fill='#07101b'/><g fill='none' stroke='#43d9ff' opacity='.18'><path d='M0 600 Q400 420 800 600 T1600 480'/><path d='M0 250 Q450 360 900 220 T1600 330'/></g><text x='800' y='420' fill='#8ea4c2' font-family='Arial' font-size='52' text-anchor='middle'>ESP32-CAM PREVIEW</text><text x='800' y='485' fill='#43d9ff' font-family='Arial' font-size='26' text-anchor='middle'>DIRECT MJPEG CAMERA AREA</text></svg>`);camLabel.textContent='CAMERA: PREVIEW MODE';}
+function drawGrid(){ctx.clearRect(0,0,map.width,map.height);ctx.fillStyle='#050811';ctx.fillRect(0,0,map.width,map.height);ctx.strokeStyle='rgba(67,217,255,.10)';ctx.lineWidth=1;for(let x=0;x<=map.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,map.height);ctx.stroke()}for(let y=0;y<=map.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(map.width,y);ctx.stroke()}}
+function drawMap(){drawGrid(); if(!trail.length)return; const xs=trail.map(p=>p.x), ys=trail.map(p=>p.y);let maxAbs=Math.max(50,...xs.map(Math.abs),...ys.map(Math.abs));let scale=Math.min(map.width,map.height)/(2.1*maxAbs);let ox=map.width/2,oy=map.height/2;ctx.lineWidth=3;ctx.strokeStyle='#43d9ff';ctx.beginPath();trail.forEach((p,i)=>{let px=ox+p.x*scale,py=oy-p.y*scale;i?ctx.lineTo(px,py):ctx.moveTo(px,py)});ctx.stroke();let p=trail[trail.length-1],px=ox+p.x*scale,py=oy-p.y*scale;ctx.fillStyle='#36e69a';ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill();let a=-p.heading*Math.PI/180;ctx.strokeStyle='#ffc857';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px+18*Math.cos(a),py+18*Math.sin(a));ctx.stroke()}
+function clamp01(v){return Math.max(0,Math.min(1,Number(v)||0))}
+function renderSideClearCountdown(){
+  const el=document.getElementById('sideCountdown');
+  const note=document.getElementById('sideCountdownNote');
+  const s=sideCountdownSnapshot;
+  if(s.qualified){
+    el.textContent='0 ms';
+    note.textContent=(s.side?s.side.toUpperCase():'SELECTED')+' side qualified — release_qualified is TRUE.';
+    return;
+  }
+  if(!s.side || s.remainingMs===null){
+    el.textContent='--';
+    note.textContent='Waiting for a LEFT or RIGHT side to remain human-clear.';
+    return;
+  }
+  const elapsed=Math.max(0,performance.now()-s.packetAt);
+  // Never render 0 while the DevKit still reports release_qualified=false.
+  const remaining=Math.max(1,Math.ceil(s.remainingMs-elapsed));
+  el.textContent=remaining+' ms';
+  note.textContent=s.side.toUpperCase()+' side must remain human-clear; countdown reaches 0 only when release_qualified becomes TRUE.';
+}
+function updateAvoidancePanel(d){
+  const left=!!d.left_zone_occupied, right=!!d.right_zone_occupied;
+  const lz=document.getElementById('leftZone'), rz=document.getElementById('rightZone');
+  lz.className='zone '+(left?'occupied':'clear'); rz.className='zone '+(right?'occupied':'clear');
+  document.getElementById('leftZoneState').textContent=left?'OCCUPIED':'CLEAR';
+  document.getElementById('rightZoneState').textContent=right?'OCCUPIED':'CLEAR';
+  const sideMs=Number(d.side_clear_ms)||0, sideReq=Number(d.side_clear_required_ms)||0;
+  const blockMs=Number(d.blocked_hold_ms)||0, blockReq=Number(d.blocked_hold_required_ms)||0;
+  document.getElementById('sideHold').textContent=Math.round(sideMs)+' / '+Math.round(sideReq)+' ms';
+  document.getElementById('blockedHold').textContent=Math.round(blockMs)+' / '+Math.round(blockReq)+' ms';
+  document.getElementById('sideHoldBar').style.width=(sideReq?Math.round(100*clamp01(sideMs/sideReq)):0)+'%';
+  document.getElementById('blockedHoldBar').style.width=(blockReq?Math.round(100*clamp01(blockMs/blockReq)):0)+'%';
+
+  const qualified=!!d.release_qualified;
+  const releaseSide=(d.release_side&&d.release_side!=='none')?String(d.release_side).toLowerCase():null;
+  const candidate=(d.side_candidate&&d.side_candidate!=='none')?String(d.side_candidate).toLowerCase():null;
+  const qualifyingSide=releaseSide||candidate;
+  let remaining=null;
+  if(!qualified && qualifyingSide && ((qualifyingSide==='left'&&!left)||(qualifyingSide==='right'&&!right)) && sideReq>0){
+    const explicit=Number(d.side_clear_remaining_ms);
+    remaining=Number.isFinite(explicit)?Math.max(1,explicit):Math.max(1,sideReq-sideMs);
+  }
+  sideCountdownSnapshot={qualified,side:qualifyingSide,remainingMs:qualified?0:remaining,requiredMs:sideReq,packetAt:performance.now()};
+
+  document.getElementById('avoidMode').textContent=qualifyingSide?'CANDIDATE: '+qualifyingSide.toUpperCase():String(d.state||'--').replaceAll('_',' ').toUpperCase();
+  const releaseBox=document.getElementById('releaseBox');
+  releaseBox.className='release-box'+(qualified?' qualified':'');
+  document.getElementById('releaseQualified').textContent=qualified
+    ? 'TRUE — '+String(d.release_side||qualifyingSide||'selected').toUpperCase()+' side completed the full clear hold'
+    : 'FALSE — no side has completed the full clear hold';
+  document.getElementById('resumeCondition').textContent=d.resume_condition||'Either LEFT or RIGHT side must remain human-clear for the configured hold period.';
+  renderSideClearCountdown();
+}
+
+function setStatus(stopped, reason, aiLease, aiAge){
+  const labels={
+    human:'STOPPED — HUMAN DETECTED',
+    blocked_by_humans:'STOPPED — BLOCKED BY HUMANS',
+    ai_link_lost:'STOPPED — AI LINK LOST',
+    camera_stale:'STOPPED — CAMERA STALE',
+    startup:'STOPPED — AI STARTING',
+    human_avoid_left:'SLOW AVOID — LEFT',
+    human_avoid_right:'SLOW AVOID — RIGHT',
+    human_recovery:'SLOW RECOVERY — FORWARD PATH CLEARING',
+    manual:'MANUAL CONTROL — AI OVERRIDE',
+    none:'DRIVING',
+    drive_watchdog:'STOPPED — DRIVE LINK LOST',
+    awaiting_neutral:'STOPPED — RELEASE JOYSTICK',
+    awaiting_new_drive:'STOPPED — NEW DRIVE COMMAND'
+  };
+  statusEl.textContent=labels[reason] || (stopped?'STOPPED':'DRIVING');
+  statusEl.className='status'+((stopped||reason.startsWith('human_avoid'))?' stop':'');
+  const age=(Number(aiAge)>=0)?Math.round(Number(aiAge)):'--';
+  document.getElementById('aiLease').textContent=aiLease?'AI LEASE: ACTIVE ('+age+' ms)':'AI LEASE: INACTIVE';
+}
+function setHealth(boxId,valueId,value,kind='ok'){const box=document.getElementById(boxId);document.getElementById(valueId).textContent=value;box.className='health'+(kind==='bad'?' bad':kind==='warn'?' warn':'')}
+function updateHealth(d){const age=Number(d.ai_age_ms);const lease=!!d.ai_lease;const fresh=lease&&Number.isFinite(age)&&age<350;setHealth('healthVision','visionHealth',lease?(fresh?'FRESH':'STALE'):'IDLE',lease?(fresh?'ok':'bad'):'warn');setHealth('healthLease','leaseHealth',lease?'ACTIVE':'INACTIVE',lease?'ok':'warn');const hall=d.hall_feedback_ok!==false;setHealth('healthHall','hallHealth',hall?'OK':'FAULT',hall?'ok':'bad');const integ=d.command_integrity_ok!==false;setHealth('healthIntegrity','integrityHealth',integ?'OK':'FAULT',integ?'ok':'bad');const mpu=d.odom_mpu!==false;const odomScore=Number(d.odom_confidence);if(Number.isFinite(odomScore)){const odomText=Math.max(0,Math.min(100,Math.round(odomScore)))+'%';setHealth('healthOdom','odomHealth',odomText,odomScore>=65&&mpu?'ok':(odomScore>=35?'warn':'bad'))}else setHealth('healthOdom','odomHealth',mpu?'OK':'MISSING',mpu?'ok':'bad');const aiValid=d.ai_health_valid===true;const aiScore=Number(d.ai_health_score);const aiText=aiValid&&Number.isFinite(aiScore)?String(Math.max(0,Math.min(100,Math.round(aiScore)))):'--';setHealth('healthAi','aiHealthValue',aiText,!aiValid?'warn':(aiScore<=35?'bad':(aiScore<75?'warn':'ok')));if(lease&&aiValid)document.getElementById('aiLease').textContent='AI LEASE: ACTIVE ('+Math.round(age)+' ms) · HEALTH '+aiText;else if(lease)document.getElementById('aiLease').textContent='AI LEASE: ACTIVE ('+Math.round(age)+' ms) · HEALTH --'}
+function updateTelemetry(d){
+  document.getElementById('speed').textContent=(Number(d.speed)||0).toFixed(1)+' cm/s';
+  document.getElementById('heading').textContent=(Number(d.heading)||0).toFixed(1)+'°';
+  document.getElementById('x').textContent=(Number(d.x)||0).toFixed(1)+' cm';
+  document.getElementById('y').textContent=(Number(d.y)||0).toFixed(1)+' cm';
+  document.getElementById('distance').textContent=(Number(d.distance)||0).toFixed(1)+' cm';
+  document.getElementById('battery').textContent=(d.battery==null||Number(d.battery)<0)?'N/A':Number(d.battery).toFixed(2)+' V';
+  setStatus(!!d.stopped,d.stop_reason||((d.ai)?'human':'none'),!!d.ai_lease,d.ai_age_ms);
+  updateHealth(d);
+  updateAvoidancePanel(d);
+  if(trail.length===0||Math.hypot((trail[trail.length-1].x||0)-d.x,(trail[trail.length-1].y||0)-d.y)>0.4){trail.push({x:Number(d.x)||0,y:Number(d.y)||0,heading:Number(d.heading)||0});if(trail.length>2500)trail.shift();drawMap()}
+}
+setInterval(renderSideClearCountdown,50);
+function connect(){/* preview */}
+function send(obj){if(socket&&socket.readyState===1)socket.send(JSON.stringify(obj))}
+function sendDrive(){send({drive:{x:Number(joyX.toFixed(3)),y:Number(joyY.toFixed(3))}});document.getElementById('jx').textContent=joyX.toFixed(2);document.getElementById('jy').textContent=joyY.toFixed(2)}
+function setJoy(x,y){const r=joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,rad=r.width*0.35;let dx=(x-cx)/rad,dy=(cy-y)/rad;const mag=Math.hypot(dx,dy);if(mag>1){dx/=mag;dy/=mag}const db=.04;joyX=Math.abs(dx)<db?0:dx;joyY=Math.abs(dy)<db?0:dy;let sx=joyX*(r.width*.35),sy=-joyY*(r.height*.35);stick.style.transform=`translate(${sx}px,${sy}px)`;sendDrive()}
+function releaseJoy(){joyX=0;joyY=0;stick.style.transform='translate(0,0)';sendDrive()}
+joystick.addEventListener('pointerdown',e=>{activePointer=e.pointerId;joystick.setPointerCapture(e.pointerId);setJoy(e.clientX,e.clientY)});joystick.addEventListener('pointermove',e=>{if(e.pointerId===activePointer)setJoy(e.clientX,e.clientY)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>joystick.addEventListener(ev,()=>{activePointer=null;releaseJoy()}));
+document.getElementById('resetMap').onclick=()=>{send({odom:'reset'});trail=[];drawMap()};
+window.addEventListener('resize',drawMap); window.addEventListener('beforeunload',()=>send({drive:{x:0,y:0}}));
+loadCamera();drawMap();connect();updateTelemetry({type:'telemetry',speed:null,heading:null,x:null,y:null,distance:null,battery:null,ai_lease:null,ai_age_ms:null,left_zone_occupied:null,right_zone_occupied:null,side_clear_ms:0,side_clear_required_ms:300,side_clear_remaining_ms:null,blocked_hold_ms:0,blocked_hold_required_ms:300,side_candidate:'none',release_qualified:false,release_side:'none',resume_condition:'Select a preview scenario to populate simulated telemetry.',stop_reason:'preview_idle',stopped:false,state:'preview_idle'});setInterval(()=>{sendDrive()},120);
+
+window.PREVIEW_MODE=true;
+function previewData(state){
+ const base={type:'telemetry',speed:null,heading:null,x:null,y:null,distance:null,battery:null,ai_lease:null,ai_age_ms:null,left_zone_occupied:null,right_zone_occupied:null,side_clear_ms:0,side_clear_required_ms:300,side_clear_remaining_ms:null,blocked_hold_ms:0,blocked_hold_required_ms:300,side_candidate:'none',release_qualified:false,release_side:'none',resume_condition:'Select a preview scenario to populate simulated telemetry.',stop_reason:'preview_idle',stopped:false,state:'preview_idle'};
+ if(state==='normal'){Object.assign(base,{speed:0,heading:0,x:0,y:0,distance:0,battery:0,ai_lease:true,ai_age_ms:18,left_zone_occupied:false,right_zone_occupied:false,side_clear_ms:300,side_candidate:'left',release_qualified:false,release_side:'none',side_clear_remaining_ms:1,stop_reason:'none',stopped:false,state:'ai_session',resume_condition:'No human in the forward path; AI lease healthy; normal autonomous driving allowed'});}
+ if(state==='blocked'){Object.assign(base,{speed:0,stopped:true,stop_reason:'blocked_by_humans',state:'blocked_by_humans',left_zone_occupied:true,right_zone_occupied:true,side_clear_ms:0,side_candidate:'none',side_clear_remaining_ms:null,release_qualified:false});}
+ else if(state==='left'){Object.assign(base,{speed:5.5,stop_reason:'human_avoid_left',state:'human_avoid_left',left_zone_occupied:false,right_zone_occupied:true,side_clear_ms:300,side_candidate:'left',release_qualified:true,release_side:'left',side_clear_remaining_ms:0});}
+ else if(state==='right'){Object.assign(base,{speed:5.5,stop_reason:'human_avoid_right',state:'human_avoid_right',left_zone_occupied:true,right_zone_occupied:false,side_clear_ms:300,side_candidate:'right',release_qualified:true,release_side:'right',side_clear_remaining_ms:0});}
+ else if(state==='recovery'){Object.assign(base,{speed:7.2,stop_reason:'human_recovery',state:'human_recovery',left_zone_occupied:false,right_zone_occupied:false,side_clear_ms:0,side_candidate:'none',release_qualified:false,release_side:'none',side_clear_remaining_ms:null,resume_condition:'Forward path must remain clear for 900 ms; then ramp to normal AI speed over 1.50 s'});}
+ else if(state==='manual'){Object.assign(base,{speed:11.2,ai_lease:false,ai_age_ms:-1,stop_reason:'manual',state:'manual',stopped:false});}
+ else if(state==='human'){Object.assign(base,{speed:0,stopped:true,stop_reason:'human',state:'human_stop',left_zone_occupied:false,right_zone_occupied:false,side_clear_ms:0,release_qualified:false,release_side:'none'});}
+ updateTelemetry(base);
+}
+const previewBar=document.createElement('div');previewBar.style.cssText='position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:20;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:7px;max-width:calc(100vw - 24px);background:rgba(4,8,14,.92);border:1px solid rgba(67,217,255,.25);border-radius:12px;box-shadow:0 8px 22px rgba(0,0,0,.35)';[['normal','SIM: NORMAL'],['human','SIM: HUMAN STOP'],['blocked','SIM: BLOCKED'],['left','SIM: LEFT QUALIFIED'],['right','SIM: RIGHT QUALIFIED'],['recovery','SIM: RECOVERY'],['manual','SIM: MANUAL']].forEach(([k,l])=>{const b=document.createElement('button');b.textContent=l;b.className='smallbtn';b.onclick=()=>{previewData(k);[...previewBar.querySelectorAll('button')].forEach(x=>x.classList.remove('preview-active'));b.classList.add('preview-active')};previewBar.appendChild(b)});document.body.appendChild(previewBar);const help=document.createElement('div');help.className='preview-help';help.textContent='Simulation controls • values are synthetic';document.body.appendChild(help);
+</script>
+
+<script>
+// Local-preview navigation works from file:// and from the bundled preview server.
+(function(){
+  const link=document.getElementById('settingsLink');
+  if(link){ link.href='camera_settings.html'; }
+})();
+</script>
+
+</body></html>
+
